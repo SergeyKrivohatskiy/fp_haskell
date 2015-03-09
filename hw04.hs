@@ -3,11 +3,10 @@
 --    Для отрицательных n значение определяется по формуле fib n = fib (n + 2) - fib (n + 1).
 --    (1 балл)
 fib :: Integer -> Integer
-fib n = let (res, _, _) = fibRec (1, 0, n)
-        in res 
+fib n = let (_, res, _) = fibRec (1, 0, (abs n))
+        in (if n > 0 then res else ((if ((abs n) `mod` 2) == 1 then 1 else (-1)) * res))
         where fibRec (a, b, n) | n > 0 = fibRec (a + b, a, n - 1)
-                               | otherwise = (a, b, n)
--- !!! Для отрицательных чисел не работает.
+                               | otherwise = (a, b, n)\
 
 -- 2a. Написать функцию, возвращающую количество цифр числа.
 --     Для целочисленного деления можете использовать функции div и mod.
@@ -45,9 +44,9 @@ integral f a b | a >= b = 0
 
 -- 6. Реализуйте оператор примитивной рекурсии rec, используя функцию (-), укажите тип rec.
 --    (1 балл)
+rec :: a -> (a -> Integer -> a) -> Integer -> a
 rec z s n | n == 0 = z
           | otherwise = s (rec z s (n - 1)) n
--- !!! Где тип?
 
 -- 7. Реализуйте факторил при помощи rec.
 --    (1 балл)
