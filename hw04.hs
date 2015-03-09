@@ -3,10 +3,10 @@
 --    Для отрицательных n значение определяется по формуле fib n = fib (n + 2) - fib (n + 1).
 --    (1 балл)
 fib :: Integer -> Integer
-fib n = let (_, res, _) = fibRec (1, 0, (abs n))
-        in (if n > 0 then res else ((if ((abs n) `mod` 2) == 1 then 1 else (-1)) * res))
+fib n = let (_, res, _) = fibRec (1, 0, abs n)
+        in if n > 0 then res else (if abs n `mod` 2 == 1 then 1 else -1) * res
         where fibRec (a, b, n) | n > 0 = fibRec (a + b, a, n - 1)
-                               | otherwise = (a, b, n)\
+                               | otherwise = (a, b, n)
 
 -- 2a. Написать функцию, возвращающую количество цифр числа.
 --     Для целочисленного деления можете использовать функции div и mod.
