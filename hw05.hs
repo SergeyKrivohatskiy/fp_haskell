@@ -44,7 +44,8 @@ ff = product . map ((3+) . (2*))
 -- 3. fibs возвращает бесконечный список чисел Фибоначчи.
 -- (0.5 балла)
 fibs :: [Integer]
-fibs = undefined
+fibs = fibsRec (1, 0)
+    where fibsRec (a, b) = (a:fibsRec (a + b, a))
 
 -- 4. isPrime проверяет простоту числа.
 -- (1 балл)
@@ -64,17 +65,28 @@ shiftL (x:xs) = xs ++ [x]
 
 -- shiftR переставляет последний элемент в начало. Реализуйте эту функцию так, чтобы она проходила по списку только один раз.
 shiftR :: [a] -> [a]
-shiftR = undefined
+shiftR [] = []
+shiftR arr = let (lastElem, others) = takeLastAndOthers arr
+             in (lastElem:others)
+             where takeLastAndOthers [x] = (x, [])
+                   takeLastAndOthers (first:others) = let (lastElem, others2) = takeLastAndOthers others
+                                                      in (lastElem, (first:others2))
 
 -- 6. swap i j меняет местами i и j элементы.
 -- (1 балл)
 swap :: Int -> Int -> [a] -> [a]
-swap = undefined
+swap i j arr | i == j = arr
+             | i > j = swap j i arr
+             | j >= (length arr) = arr
+             | otherwise = let (arr1, (xi:arr2)) = splitAt i arr
+                               (arr3, (xj:arr4)) = splitAt (j - i - 1) arr2
+                           in arr1 ++ [xj] ++ arr3 ++ [xi] ++ arr4
 
 -- 7. takeLast n xs возвращает последние n элементов списка xs.
 -- (1 балл)
 takeLast :: Int -> [a] -> [a]
-takeLast = undefined
+takeLast n arr = let (_, res) = splitAt (length arr - n) arr
+                 in res
 
 -- 8. Назовем элементы, которые удовлетворяют предикату p хорошими, остальные плохими.
 -- Тогда mapl p f xs выбрасывает плохие элементы, а блоки подряд идущих хороших элементов,
