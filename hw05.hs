@@ -2,37 +2,44 @@ import Test.HUnit
 -- Нужно поставить библиотеку hunit:
 -- cabal install hunit
 
+mapn :: (Int -> a -> b) -> [a] -> [b]
+mapn = mapn_rec 0
+    where mapn_rec _ f [] = []
+          mapn_rec n f (a:xp) = (f n a) : (mapn_rec (n + 1) f xp)
+
 -- 1. fun четные числа в нечетных позициях (нумеруя с 0) умножает на 2, остальные не изменяет.
 -- (0.5 балла)
 fun :: [Integer] -> [Integer]
-fun = undefined
+fun = mapn f
+    where f a b | (not $ even a) && (even b) = b * 2 | otherwise = b
 
 -- 2. Реализовать следующие функции, используя композицию:
 -- (1 балл)
 
 -- fa работает как функция notElem. Используйте функцию elem.
 fa :: Eq a => a -> [a] -> Bool
-fa = undefined
+fa = curry (not . (uncurry elem))
 
 -- fb g x должен возвращать True, если и только если g x четен. Используйте функцию even.
 fb :: (Integer -> Integer) -> Integer -> Bool
-fb = undefined
+fb = (even .)
 
 -- fc xs возвращает True, если в xs есть хотя бы 1 положительное число, иначе False. Используйте функции filter и null.
 fc :: [Integer] -> Bool
-fc = undefined
+fc = not . null . filter positive
+    where positive x = x > 0
 
 -- fd p xs возвращает количество элементов в xs, не удовлетворяющих предикату p. Используйте функции filter и length.
 fd :: (a -> Bool) -> [a] -> Int
-fd = undefined
+fd p = length . filter (not . p) -- пока без идей.TODO
 
 -- fe возвращает сумму первых 10 элементов списка.
 fe :: [Integer] -> Integer
-fe = undefined
+fe = sum . take 10
 
 -- ff каждый элемент умножает на 2, потом прибавляет 3 и возвращает произведение всех элементов. Используйте функцию product.
 ff :: [Integer] -> Integer
-ff = undefined
+ff = product . map ((3+) . (2*))
 
 -- 3. fibs возвращает бесконечный список чисел Фибоначчи.
 -- (0.5 балла)
@@ -42,16 +49,18 @@ fibs = undefined
 -- 4. isPrime проверяет простоту числа.
 -- (1 балл)
 isPrime :: Integer -> Bool
-isPrime = undefined
+isPrime n | n < 2 = False
+          | otherwise = null $ filter (\x -> (n `mod` x) == 0) [2..(floor $ sqrt $ fromIntegral n)]
 
 -- primes возвращает бесконечный список простых чисел.
 primes :: [Integer]
-primes = undefined
+primes = filter isPrime [1..]
 
 -- 5. shiftL переставляет первый элемент в конец списка. Реализуйте эту функцию так, чтобы она проходила по списку только один раз.
 -- (1 балл)
 shiftL :: [a] -> [a]
-shiftL = undefined
+shiftL [] = []
+shiftL (x:xs) = xs ++ [x]
 
 -- shiftR переставляет последний элемент в начало. Реализуйте эту функцию так, чтобы она проходила по списку только один раз.
 shiftR :: [a] -> [a]
