@@ -85,8 +85,14 @@ swap i j arr | i == j = arr
 -- 7. takeLast n xs возвращает последние n элементов списка xs.
 -- (1 балл)
 takeLast :: Int -> [a] -> [a]
+{-
 takeLast n arr = let (_, res) = splitAt (length arr - n) arr
                  in res
+-}
+{-
+takeLast n arr = snd $ splitAt (length arr - n) arr
+-}
+takeLast n arr = drop (length arr - n) arr
 
 -- 8. Назовем элементы, которые удовлетворяют предикату p хорошими, остальные плохими.
 -- Тогда mapl p f xs выбрасывает плохие элементы, а блоки подряд идущих хороших элементов,
