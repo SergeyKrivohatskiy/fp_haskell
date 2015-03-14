@@ -1,4 +1,5 @@
 import Test.HUnit
+import Data.List
 -- Нужно поставить библиотеку hunit:
 -- cabal install hunit
 
@@ -31,7 +32,7 @@ fc = not . null . filter (> 0)
 
 -- fd p xs возвращает количество элементов в xs, не удовлетворяющих предикату p. Используйте функции filter и length.
 fd :: (a -> Bool) -> [a] -> Int
-fd p = length . filter (not . p) -- пока без идей.TODO
+fd p = length . filter (not . p) -- TODO
 
 -- fe возвращает сумму первых 10 элементов списка.
 fe :: [Integer] -> Integer
@@ -100,16 +101,20 @@ takeLast n arr = drop (length arr - n) arr
 -- Заметьте, что в функцию f никогда не передаются пустые списки.
 -- (1 балл)
 mapl :: (a -> Bool) -> ([a] -> b) -> [a] -> [b]
-mapl = undefined
+mapl p f xs = myF p f (span p xs)
+              where myF p f ([], []) = []
+                    myF p f ([], (x:xs)) = mapl p f xs
+                    myF p f (arr, []) = [(f arr)]
+                    myF p f (arr, (x:xs)) = (f arr: mapl p f xs)
 
 -- 9. Напишите аналоги функций unlines и unwords, используя функцию intercalate.
 --    Заметьте, что функция unlines' работает чуть иначе, чем unlines.
 -- (0.5 балла)
 unlines' :: [String] -> String
-unlines' = undefined
+unlines' = intercalate "\n"
 
 unwords' :: [String] -> String
-unwords' = undefined
+unwords' = intercalate " "
 
 main = fmap (\_ -> ()) $ runTestTT $ test
     $    label "fun"
