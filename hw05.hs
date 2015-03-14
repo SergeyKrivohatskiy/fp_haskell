@@ -5,20 +5,21 @@ import Test.HUnit
 mapn :: (Int -> a -> b) -> [a] -> [b]
 mapn = mapn_rec 0
     where mapn_rec _ f [] = []
-          mapn_rec n f (a:xp) = (f n a) : (mapn_rec (n + 1) f xp)
+          mapn_rec n f (a:xp) = f n a : mapn_rec (n + 1) f xp
 
 -- 1. fun четные числа в нечетных позициях (нумеруя с 0) умножает на 2, остальные не изменяет.
 -- (0.5 балла)
 fun :: [Integer] -> [Integer]
 fun = mapn f
-    where f a b | (not $ even a) && (even b) = b * 2 | otherwise = b
+    where f a b | odd a && even b = b * 2
+                | otherwise = b
 
 -- 2. Реализовать следующие функции, используя композицию:
 -- (1 балл)
 
 -- fa работает как функция notElem. Используйте функцию elem.
 fa :: Eq a => a -> [a] -> Bool
-fa = curry (not . (uncurry elem))
+fa = curry (not . uncurry elem)
 
 -- fb g x должен возвращать True, если и только если g x четен. Используйте функцию even.
 fb :: (Integer -> Integer) -> Integer -> Bool
@@ -26,8 +27,7 @@ fb = (even .)
 
 -- fc xs возвращает True, если в xs есть хотя бы 1 положительное число, иначе False. Используйте функции filter и null.
 fc :: [Integer] -> Bool
-fc = not . null . filter positive
-    where positive x = x > 0
+fc = not . null . filter (> 0)
 
 -- fd p xs возвращает количество элементов в xs, не удовлетворяющих предикату p. Используйте функции filter и length.
 fd :: (a -> Bool) -> [a] -> Int
@@ -45,7 +45,7 @@ ff = product . map ((3+) . (2*))
 -- (0.5 балла)
 fibs :: [Integer]
 fibs = fibsRec (1, 0)
-    where fibsRec (a, b) = (a:fibsRec (a + b, a))
+    where fibsRec (a, b) = a:fibsRec (a + b, a)
 
 -- 4. isPrime проверяет простоту числа.
 -- (1 балл)
