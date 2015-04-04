@@ -9,19 +9,19 @@ import Data.Char
 
 -- (0.5 балла)
 boolP :: Parser Char Bool
-boolP = undefined
+boolP = pure (const True) <*> string "True" <|> pure (const False) <*> string "False"
 
 -- (0.5 балла)
 maybeP :: Parser Char a -> Parser Char (Maybe a)
-maybeP = undefined
+maybeP parserA = pure (const Nothing) <*> string "Nothing" <|> pure (\x y -> Just y) <*> string "Just " <*> parserA
 
 -- (0.5 балла)
 listP :: Parser Char a -> Parser Char [a]
-listP = undefined
+listP parserA = brackets (sepBy parserA (symbol ','))
 
 -- (0.5 балла)
 listP' :: Parser Char a -> Parser Char [a]
-listP' = undefined
+listP' parserA = brackets (sepBy parserA (between spaces spaces (symbol ',')))
 
 data Tree a b = Node (Tree a b) a (Tree a b) | Leaf b deriving (Show, Eq)
 
