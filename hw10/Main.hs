@@ -1,5 +1,6 @@
-import Test.HUnit
+import Test.HUnit hiding (State)
 import Data.IORef
+import Control.Monad.State
 
 -- 1. Функция tagTree должна нумеровать узлы в дереве следующим образом:
 -- В пронумерованном дереве должны встречаться все числа от 0 до (n - 1) ровно по одному разу, где n - число узлов в дереве.
@@ -8,7 +9,15 @@ import Data.IORef
 data Tree a = Node a (Tree a) (Tree a) | Leaf deriving (Eq,Show)
 
 tagTree :: Tree a -> Tree (a, Int)
-tagTree = undefined
+tagTree tree = evalState (tagTreeState tree) 0 where
+    tagTreeState :: Tree a -> (State Int (Tree (a, Int)))
+    tagTreeState Leaf = return Leaf
+    tagTreeState (Node a lTree rTree) = do
+        newLTree <- tagTreeState lTree
+        i <- get
+        put (i + 1)
+        newRTree <- tagTreeState rTree
+        return (Node (a, i) newLTree newRTree)
 
 tree1  = Node "a"     (Node "q"     (Node "t"     Leaf Leaf) (Node "r"     Leaf Leaf)) (Node "x"     Leaf Leaf)
 tree1r = Node ("a",3) (Node ("q",1) (Node ("t",0) Leaf Leaf) (Node ("r",2) Leaf Leaf)) (Node ("x",4) Leaf Leaf)
@@ -18,7 +27,15 @@ tree2r = Node ("a",1) (Node ("q",0) Leaf Leaf) (Node ("x",3) (Node ("s",2) Leaf 
 -- 2. Напишите while.
 -- (1 балл)
 while :: Monad m => m Bool -> m a -> m [a]
-while = undefined
+while predicate function = do
+    p <- predicate
+    if (not p)
+        then do
+            return []
+        else do
+            a <- function
+            as <- while predicate function
+            return (a:as)
 
 fac :: Int -> IO [Int]
 fac n = do
