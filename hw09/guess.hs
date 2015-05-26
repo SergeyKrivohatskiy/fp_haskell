@@ -9,4 +9,19 @@ import System.Random(randomRIO)
 -}
 
 main :: IO ()
-main = undefined
+main = do
+    number <- randomRIO (1, 100)
+    tryGuess number 5
+    where
+        tryGuess :: Int -> Int -> IO ()
+        tryGuess _ 0 = putStrLn "I'm affraid, your attempts is over..."
+        tryGuess number attempts = do
+            numberStrGotten <- getLine
+            numberGotten <- return (read numberStrGotten)
+            if number ==  numberGotten
+                then putStrLn "You're God damn right!"
+                else do
+                    if number > numberGotten
+                        then putStrLn ">"
+                        else putStrLn "<"
+                    tryGuess number (attempts - 1)

@@ -1,5 +1,8 @@
 import Network
 import Control.Concurrent(forkIO)
+import System.IO
+import Control.Monad
+import System.Environment
 
 {-
 Реализуйте простой телнет-клиент.
@@ -8,4 +11,11 @@ import Control.Concurrent(forkIO)
 -}
 
 main :: IO ()
-main = undefined
+main = do
+    args <- getArgs
+    case args of
+        (addr:(port:_)) -> do
+                handler <- connectTo addr (PortNumber (fromInteger (read port)))
+                forkIO $ forever (hGetLine handler >>= putStrLn)
+                forever (getLine >>= hPutStrLn handler)
+        otherwise -> putStrLn "Usage: telnet {addr} {port number}"
